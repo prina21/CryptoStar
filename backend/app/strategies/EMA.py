@@ -1,0 +1,1 @@
+print("EMA Strategy")
