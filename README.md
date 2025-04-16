@@ -31,5 +31,5 @@ Welcome to the **Crypto HFT Engine** project! This is a high-frequency trading e
   - **Profit & Loss (PnL)**
   - **Order execution metrics (latency, throughput)**
 
-## 📁 **Project Structure**
+
 
