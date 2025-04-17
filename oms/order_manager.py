@@ -4,11 +4,6 @@ from alpaca_trade_api.rest import REST
 from .order import Order, Side, OrderType, OrderStatus
 from .alpaca_client import AlpacaClient
 
-# --- config.py ---
-API_KEY = "your_alpaca_api_key"
-SECRET_KEY = "your_alpaca_secret"
-PAPER_TRADING = True
-
 class OrderManager:
     def __init__(self, alpaca_client: AlpacaClient):
         self.client = alpaca_client
@@ -50,14 +45,14 @@ class OrderManager:
 
 
     def amend_order(self, order_id, new_qty=None, new_limit_price=None):
+        """
+        Amend order -- comments only
+        """
         order = self.orders.get(order_id)
-
         if not order:
             return None, f"Order ID {order_id} not found"
-
         if order.status != OrderStatus.SUBMITTED:
             return order, f"Order {order_id} is not amendable. Current status: {order.status.name}"
-
         try:
             self.client.cancel_order(order_id)
             order.status = OrderStatus.CANCELED
