@@ -1,1 +1,0 @@
-print("Backtesting EMA Strategy")
