@@ -1,8 +1,13 @@
+import os
+import sys
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+
 from uuid import uuid4
 from order import Order, OrderType, OrderStatus, Side
 from alpaca_trade_api.rest import REST
-from .order import Order, Side, OrderType, OrderStatus
-from .alpaca_client import AlpacaClient
+from order import Order, Side, OrderType, OrderStatus
+from alpaca_client import AlpacaClient
+from databases import dbOrders as db
 
 class OrderManager:
     def __init__(self, alpaca_client: AlpacaClient):
@@ -22,7 +27,16 @@ class OrderManager:
                 return order, "Invalid order type"
 
             order.status = OrderStatus.SUBMITTED
+
+            if hasattr(response, 'id'):
+                alpaca_order_id = response.id
+            else:
+                raise ValueError("No Alpaca Id")
+
+            order.alpaca_order_id = alpaca_order_id
             self.orders[order.id] = order
+            # print("Order attributes:", dir(order))
+            db.insert_order(order, alpaca_order_id)
             return order, f"Order submitted: {response.id}"
         except Exception as e:
             order.status = OrderStatus.REJECTED
@@ -30,14 +44,17 @@ class OrderManager:
         
 
     def cancel_order(self, order_id):
-        order = self.orders.get(order_id)
+        order = db.get_order(order_id)
+        print("Order_id", order_id)
 
         if not order:
             return None, f"Order ID {order_id} not found"
 
         try:
-            self.client.cancel_order(order_id)
-            order.status = OrderStatus.CANCELED
+            self.client.cancel_order(order.alpaca_order_id)
+            print("Deleting order")
+            db.cancel_order(order_id)
+            order.status = OrderStatus.CANCELLED
             return order, f"Order {order_id} canceled successfully"
         except Exception as e:
             return order, f"Failed to cancel order {order_id}: {str(e)}"
@@ -45,10 +62,7 @@ class OrderManager:
 
 
     def amend_order(self, order_id, new_qty=None, new_limit_price=None):
-        """
-        Amend order -- comments only
-        """
-        order = self.orders.get(order_id)
+        order = db.get_order(order_id)
         if not order:
             return None, f"Order ID {order_id} not found"
         if order.status != OrderStatus.SUBMITTED:

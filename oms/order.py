@@ -21,8 +21,9 @@ class OrderStatus(Enum):
 
 
 class Order:
-    def __init__(self, symbol, qty, side: Side, type_: OrderType, limit_price=None):
+    def __init__(self, symbol, qty, side: Side, type_: OrderType, limit_price=None, alpaca_order_id=None):
         self.id = str(uuid.uuid4())
+        self.alpaca_order_id = alpaca_order_id
         self.timestamp = time.time()
         self.symbol = symbol
         self.qty = qty

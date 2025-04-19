@@ -1,3 +1,4 @@
+
 from alpaca_trade_api.rest import REST
 
 class AlpacaClient:
@@ -22,4 +23,12 @@ class AlpacaClient:
             limit_price=limit_price,
             time_in_force="gtc"
         )
-
+    
+    def cancel_order(self, order_id):
+        try:
+            self.api.cancel_order(order_id)  
+            print(f"Alpaca order {order_id} cancelled.")
+            
+        except Exception as e:
+            print(f"Error cancelling Alpaca order: {e}")
+            raise
