@@ -9,28 +9,47 @@ from alpaca.data.live import CryptoDataStream
 from alpaca.data.requests import CryptoBarsRequest
 from alpaca.data.timeframe import TimeFrame, TimeFrameUnit
 from alpaca.data.live.crypto import CryptoFeed
-from config.settings import ALPACA_API_KEY, ALPACA_SECRET_KEY
+import sys
+import os
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'oms')))
+from order_manager import OrderManager
+from order import Side, OrderType
+from alpaca_client import AlpacaClient
+from dotenv import load_dotenv
 
 # -----------------------------------------
 # Configuration
 # -----------------------------------------
-symbols = ["BTC/USD", "ETH/USD", "SOL/USD"]  # ✅ Correct format for SDK
+symbols = ["BTC/USD", "ETH/USD", "SOL/USD"]  #  Correct format for SDK
 intervals = {
     "1Min": TimeFrame(1, TimeFrameUnit.Minute),
     "5Min": TimeFrame(5, TimeFrameUnit.Minute),
     "15Min": TimeFrame(15, TimeFrameUnit.Minute)
 }
+load_dotenv()
 
+ALPACA_API_KEY = os.getenv("ALPACA_API_KEY")
+ALPACA_SECRET_KEY = os.getenv("ALPACA_SECRET_KEY")
+ALPACA_BASE_URL = os.getenv("ALPACA_BASE_URL")
+
+alpaca_client = AlpacaClient(ALPACA_API_KEY, ALPACA_SECRET_KEY, ALPACA_BASE_URL)
 client = CryptoHistoricalDataClient(ALPACA_API_KEY, ALPACA_SECRET_KEY)
 stream = CryptoDataStream(ALPACA_API_KEY, ALPACA_SECRET_KEY, feed=CryptoFeed.US)
+order_manager = OrderManager(alpaca_client)
 bar_data = {s: pd.DataFrame() for s in symbols}
 MAX_BARS = 100
 
 # -----------------------------------------
-# Order Stub
+# Order 
 # -----------------------------------------
 def send_order(symbol, action):
-    print(f">>> [{datetime.now().strftime('%H:%M:%S')}] {action} order sent for {symbol}")
+    qty = 0.1  
+    side = Side.BUY if action == "BUY" else Side.SELL
+    type_ = OrderType.MARKET  # Or OrderType.LIMIT 
+
+    order, msg = order_manager.submit_order(symbol, qty, side, type_)
+    print(f">>> send_order [{datetime.now().strftime('%H:%M:%S')}] {msg}")
+
 
 # -----------------------------------------
 # Real-Time WebSocket Handler
@@ -125,6 +144,7 @@ def run_ema_engine():
     ema_short = 9
     ema_long = 21
     signal_table = {}
+    # send_order('BTC/USD', "BUY")
 
     print("\n--- EMA Strategy Signals ---")
     for symbol in symbols:
@@ -224,9 +244,9 @@ def run_rsi_engine():
 def polling_loop():
     while True:
         try:
-            run_engine_sma_crossover()
+            # run_engine_sma_crossover()
             run_ema_engine()
-            run_rsi_engine()
+            # run_rsi_engine()
         except Exception as e:
             print(f"[POLLING ERROR] {e}")
         time.sleep(60)
