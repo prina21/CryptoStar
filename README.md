@@ -1,6 +1,6 @@
-# 🚀 **Crypto High-Frequency Trading Engine**
+# 🚀 **Crypto Trading Engine**
 
-Welcome to the **Crypto HFT Engine** project! This is a high-frequency trading engine designed to execute fast and efficient trades in the cryptocurrency market using advanced algorithmic strategies. The engine connects to multiple exchanges, fetches real-time market data, processes trading signals, and executes orders with minimal latency. It's built to be highly performant, scalable, and optimized for crypto trading.
+Welcome to the **Crypto Engine** project! This is a high-frequency trading engine designed to execute fast and efficient trades in the cryptocurrency market using advanced algorithmic strategies. The engine connects to multiple exchanges, fetches real-time market data, processes trading signals, and executes orders with minimal latency. It's built to be highly performant, scalable, and optimized for crypto trading.
 
 ## 🔧 **Key Features**
 
