@@ -47,10 +47,16 @@ current_strategy = None
 # -----------------------------------------
 def fetch_sentiment_score():
     try:
-        return round(random.uniform(0.2, 0.8), 2)
+        url = "https://api.alternative.me/fng/"
+        response = requests.get(url)
+        if response.status_code == 200:
+            data = response.json()
+            value = int(data['data'][0]['value'])  # e.g., 23 = Extreme Fear
+            return round(value / 100, 2)
     except Exception as e:
         print("Sentiment fetch failed:", e)
-        return 0.5
+    return 0.5
+
 
 def get_active_strategy(sentiment_score):
     if sentiment_score > 0.7:
