@@ -1,0 +1,48 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --background: #121212;
+  --foreground: #212121;
+  --text:white;
+}
+
+
+body {
+  color: var(--text);
+  background: var(--background);
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+.navbar{
+  background-color: var(--foreground);
+}
+
+.card{
+  background-color: var(--foreground);
+  border-radius: 10px;
+}
+
+.dashboard-container{
+  display: grid;
+  gap: 10px;
+  grid-template-columns: 1fr 2fr 1fr;
+  margin: 10px;
+}
+
+.grid-rows-2{
+  display: grid;
+  gap: 10px;
+  grid-template-rows: 1fr 1fr;
+  height: 100%;
+}
+
+::-webkit-scrollbar {
+  width: 0;  /* Remove scrollbar space */
+  background: transparent;  /* Optional: just make scrollbar invisible */
+}
+/* Optional: show position indicator in red */
+::-webkit-scrollbar-thumb {
+  background: #FF0000;
+}
