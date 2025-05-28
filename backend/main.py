@@ -159,8 +159,8 @@ class Coin(BaseModel):
     symbol: str
     name: str
 
-class WatchlistData(BaseModel):
-    watchlist: list[Coin]
+# class WatchlistData(BaseModel):
+#     watchlist: list[Coin]
 
 def read_watchlist():
     if not os.path.exists(WATCHLIST_FILE):
@@ -176,9 +176,9 @@ def write_watchlist(data):
 def get_watchlist():
     return read_watchlist()
 
-@app.post("/watchlist")
-def update_watchlist(data: WatchlistData):
-    write_watchlist(data.model_dump())
-    return {"success": True}
+# @app.post("/watchlist")
+# def update_watchlist(data: WatchlistData):
+#     write_watchlist(data.model_dump())
+#     return {"success": True}
 
     

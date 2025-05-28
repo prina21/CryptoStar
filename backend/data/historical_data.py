@@ -1,1 +1,0 @@
-print("Historical Data for backtesting")
